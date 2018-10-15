@@ -18,6 +18,7 @@ namespace BioEngine.Core.Infra
         public override void ConfigureHostBuilder(IWebHostBuilder hostBuilder)
         {
             AddLogging(hostBuilder);
+            hostBuilder.ConfigureServices(services => { services.AddHttpContextAccessor(); });
         }
 
         private void AddLogging(IWebHostBuilder hostBuilder)
