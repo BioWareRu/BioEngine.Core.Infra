@@ -13,6 +13,8 @@ namespace BioEngine.Core.Infra
 {
     public class InfraModule : BioEngineModule<InfraModuleConfig>
     {
+        private readonly LogLevelController _controller = new LogLevelController();
+        
         public override void ConfigureHostBuilder(IWebHostBuilder hostBuilder)
         {
             AddLogging(hostBuilder);
@@ -21,7 +23,7 @@ namespace BioEngine.Core.Infra
         private void AddLogging(IWebHostBuilder hostBuilder)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            var controller = new LogLevelController();
+            
             hostBuilder.ConfigureServices((context, services) =>
             {
                 var isGraylogDisabled =
@@ -33,7 +35,7 @@ namespace BioEngine.Core.Infra
                 {
                     loggerConfiguration = loggerConfiguration
                         .WriteTo.LiterateConsole();
-                    controller.Switch.MinimumLevel = Config.DevLevel;
+                    _controller.Switch.MinimumLevel = Config.DevLevel;
                 }
                 else
                 {
@@ -50,16 +52,16 @@ namespace BioEngine.Core.Infra
                             Port = int.Parse(context.Configuration["BRC_GRAYLOG_PORT"]),
                             Facility = facility
                         });
-                    controller.Switch.MinimumLevel = Config.ProdLevel;
+                    _controller.Switch.MinimumLevel = Config.ProdLevel;
                 }
 
-                loggerConfiguration.MinimumLevel.ControlledBy(controller.Switch);
+                loggerConfiguration.MinimumLevel.ControlledBy(_controller.Switch);
                 Log.Logger = loggerConfiguration.CreateLogger();
             });
             hostBuilder.UseSerilog();
             hostBuilder.ConfigureServices(services =>
             {
-                services.AddSingleton(controller);
+                services.AddSingleton(_controller);
                 services.AddMvc().AddApplicationPart(typeof(WebHostBuilderExtensions).Assembly);
             });
         }
