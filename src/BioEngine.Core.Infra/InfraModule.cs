@@ -60,6 +60,7 @@ namespace BioEngine.Core.Infra
                     });
                 _controller.Switch.MinimumLevel = Config.ProdLevel;
             }
+            loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
 
             loggerConfiguration.MinimumLevel.ControlledBy(_controller.Switch);
             Log.Logger = loggerConfiguration.CreateLogger();
