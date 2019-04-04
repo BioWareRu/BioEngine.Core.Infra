@@ -18,7 +18,7 @@ namespace BioEngine.Core.Infra.Controllers
 
         private string SwitchLevel(LogEventLevel level)
         {
-            var result = $"Current level: {_switch.MinimumLevel}. New level: {level}";
+            var result = $"Current level: {_switch.MinimumLevel.ToString()}. New level: {level.ToString()}";
             _switch.MinimumLevel = level;
             return result;
         }
