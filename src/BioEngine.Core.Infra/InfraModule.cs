@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 using BioEngine.Core.Modules;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.AspNetCore;
@@ -17,7 +17,7 @@ namespace BioEngine.Core.Infra
     {
         private readonly LogLevelController _controller = new LogLevelController();
 
-        public override void ConfigureHostBuilder(IWebHostBuilder hostBuilder)
+        public override void ConfigureHostBuilder(IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureServices(services =>
             {
@@ -27,7 +27,7 @@ namespace BioEngine.Core.Infra
         }
 
         public override void ConfigureServices(IServiceCollection services, IConfiguration configuration,
-            IHostingEnvironment environment)
+            IHostEnvironment environment)
         {
             Console.OutputEncoding = Encoding.UTF8;
             base.ConfigureServices(services, configuration, environment);
@@ -66,7 +66,6 @@ namespace BioEngine.Core.Infra
             Log.Logger = loggerConfiguration.CreateLogger();
 
             services.AddSingleton(_controller);
-            services.AddMvc().AddApplicationPart(typeof(WebHostBuilderExtensions).Assembly);
             services.AddSingleton(_ => (ILoggerFactory)new SerilogLoggerFactory());
         }
     }
