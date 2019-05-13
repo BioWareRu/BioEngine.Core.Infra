@@ -40,8 +40,8 @@ namespace BioEngine.Core.Logging.Graylog
 
     public class GraglogModuleConfig : LoggingModuleConfig
     {
-        public string Facility { get; set; }
-        public string Host { get; set; }
+        public string Facility { get; set; } = "";
+        public string Host { get; set; } = "";
         public int Port { get; set; }
     }
 }
