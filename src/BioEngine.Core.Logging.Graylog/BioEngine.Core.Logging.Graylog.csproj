@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Serilog.Sinks.Graylog" Version="2.0.7" />
+    <PackageReference Include="Serilog.Sinks.Graylog" Version="2.0.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BioEngine.Core.Logging\BioEngine.Core.Logging.csproj" />
