@@ -12,7 +12,7 @@ using Serilog.Events;
 
 namespace BioEngine.Core.Logging
 {
-    public abstract class LoggingModule<T> : BioEngineModule<T> where T : LoggingModuleConfig, new()
+    public abstract class LoggingModule<T> : BioEngineModule<T> where T : LoggingModuleConfig
     {
         private readonly LogLevelController _controller = new LogLevelController();
 
