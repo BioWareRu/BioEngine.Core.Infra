@@ -9,11 +9,10 @@ using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Sinks.Graylog;
 
-namespace BioEngine.Core.Infra
+namespace BioEngine.Core.Logging
 {
-    public class InfraModule : BioEngineModule<InfraModuleConfig>
+    public abstract class LoggingModule<T> : BioEngineModule<T> where T : LoggingModuleConfig, new()
     {
         private readonly LogLevelController _controller = new LogLevelController();
 
@@ -32,35 +31,18 @@ namespace BioEngine.Core.Infra
             Console.OutputEncoding = Encoding.UTF8;
             base.ConfigureServices(services, configuration, environment);
 
-            var isGraylogDisabled =
-                !string.IsNullOrEmpty(configuration["BRC_GRAYLOG_DISABLED"]) &&
-                configuration["BRC_GRAYLOG_DISABLED"] == "true";
             var loggerConfiguration =
                 new LoggerConfiguration().Enrich.FromLogContext();
-            if (environment.IsDevelopment() || isGraylogDisabled)
+            if (environment.IsDevelopment())
             {
-                loggerConfiguration = loggerConfiguration
-                    .WriteTo.Console();
+                loggerConfiguration = ConfigureDev(loggerConfiguration);
                 _controller.Switch.MinimumLevel = Config.DevLevel;
             }
             else
             {
-                var facility = environment.ApplicationName;
-                if (!string.IsNullOrEmpty(configuration["BRC_GRAYLOG_FACILITY"]))
-                {
-                    facility = configuration["BRC_GRAYLOG_FACILITY"];
-                }
-
-                loggerConfiguration = loggerConfiguration
-                    .WriteTo.Graylog(new GraylogSinkOptions
-                    {
-                        HostnameOrAddress = configuration["BRC_GRAYLOG_HOST"],
-                        Port = int.Parse(configuration["BRC_GRAYLOG_PORT"]),
-                        Facility = facility
-                    });
+                loggerConfiguration = ConfigureProd(loggerConfiguration, environment.ApplicationName);
                 _controller.Switch.MinimumLevel = Config.ProdLevel;
             }
-            //loggerConfiguration.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
 
             loggerConfiguration.MinimumLevel.ControlledBy(_controller.Switch);
             Log.Logger = loggerConfiguration.CreateLogger();
@@ -68,9 +50,17 @@ namespace BioEngine.Core.Infra
             services.AddSingleton(_controller);
             services.AddSingleton(_ => (ILoggerFactory)new SerilogLoggerFactory());
         }
+
+        protected virtual LoggerConfiguration ConfigureDev(LoggerConfiguration loggerConfiguration)
+        {
+            return loggerConfiguration.WriteTo.Console();
+        }
+
+        protected abstract LoggerConfiguration ConfigureProd(LoggerConfiguration loggerConfiguration,
+            string appName);
     }
 
-    public class InfraModuleConfig
+    public abstract class LoggingModuleConfig
     {
         public LogEventLevel DevLevel { get; set; } = LogEventLevel.Debug;
         public LogEventLevel ProdLevel { get; set; } = LogEventLevel.Error;

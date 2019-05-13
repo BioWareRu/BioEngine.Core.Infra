@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace BioEngine.Core.Infra.Controllers
+namespace BioEngine.Core.Logging.Controllers
 {
     [Route("logs")]
     [Authorize]
