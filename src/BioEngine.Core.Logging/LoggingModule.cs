@@ -63,7 +63,7 @@ namespace BioEngine.Core.Logging
     public abstract class LoggingModuleConfig
     {
         public LogEventLevel DevLevel { get; set; } = LogEventLevel.Debug;
-        public LogEventLevel ProdLevel { get; set; } = LogEventLevel.Error;
+        public LogEventLevel ProdLevel { get; set; } = LogEventLevel.Information;
     }
 
     public class LogLevelController
