@@ -12,25 +12,17 @@ using Serilog.Events;
 
 namespace BioEngine.Core.Logging
 {
-    public abstract class LoggingModule<T> : BioEngineModule<T> where T : LoggingModuleConfig
+    public abstract class LoggingModule<T> : BaseBioEngineModule<T> where T : LoggingModuleConfig
     {
         private readonly LogLevelController _controller = new LogLevelController();
-
-        public override void ConfigureHostBuilder(IHostBuilder hostBuilder)
-        {
-            hostBuilder.ConfigureServices(services =>
-            {
-                services.AddHttpContextAccessor();
-                services.AddMemoryCache();
-            });
-        }
 
         public override void ConfigureServices(IServiceCollection services, IConfiguration configuration,
             IHostEnvironment environment)
         {
             Console.OutputEncoding = Encoding.UTF8;
             base.ConfigureServices(services, configuration, environment);
-
+            services.AddHttpContextAccessor();
+            services.AddMemoryCache();
             var loggerConfiguration =
                 new LoggerConfiguration().Enrich.FromLogContext();
             if (environment.IsDevelopment())
