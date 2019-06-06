@@ -17,7 +17,7 @@ bioengine.AddModule<LokiLoggingModule, LokiLoggingConfig>((configuration, enviro
 
 ## Смена уровня логгирования в рантайме
 
-Модуль добавляет MVC-контроллер  `LogsController` позволящий GET-запросом изменить текущий уровень логов. Контроллер требует авторизации.
+Модуль добавляет MVC-контроллер  `LogsController` позволящий GET-запросом изменить текущий уровень логов. Контроллер требует авторизации с политикой `logs`.
 
 ```
 GET /logs/info
