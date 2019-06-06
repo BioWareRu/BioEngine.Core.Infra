@@ -6,7 +6,7 @@ using Serilog.Events;
 namespace BioEngine.Core.Logging.Controllers
 {
     [Route("logs")]
-    [Authorize]
+    [Authorize("logs")]
     public class LogsController : Controller
     {
         private readonly LoggingLevelSwitch _switch;
